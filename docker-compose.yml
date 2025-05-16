@@ -26,6 +26,13 @@ services:
     networks:
       - booking-net
 
+  user-service:
+    build: ./user-service
+    ports:
+      - "8001:8000"
+    networks:
+      - booking-net
+
 networks:
   booking-net:
     driver: bridge
