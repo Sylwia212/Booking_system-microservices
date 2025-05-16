@@ -1,41 +1,38 @@
-version: '3.9'
+version: "3.9"
 
 services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: booking_db
-      POSTGRES_USER: booking_user
-      POSTGRES_PASSWORD: booking_pass
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - booking-net
-
   booking-service:
     build: ./booking-service
-    depends_on:
-      - postgres
-    environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_USER: booking_user
-      POSTGRES_PASSWORD: booking_pass
-      POSTGRES_DB: booking_db
     ports:
       - "8000:8000"
-    networks:
-      - booking-net
+    depends_on:
+      - postgres
 
   user-service:
     build: ./user-service
     ports:
-      - "8001:8000"
-    networks:
-      - booking-net
+      - "8003:8000"
 
-networks:
-  booking-net:
-    driver: bridge
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8001:8001"
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8002:8002"
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: booking
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:
